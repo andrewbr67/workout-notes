@@ -1,11 +1,16 @@
 import type { Workout } from '../types/workout';
 
-export default function WorkoutList({ workouts }: { workouts: Workout[] }) {
+interface WorkoutListProps {
+    workouts: Workout[];
+    onDelete : (id: string) => void;
+}
+
+export default function WorkoutList({ workouts, onDelete }: WorkoutListProps) {
     return (
         <div>
             {workouts.map((workout) => (
                 <div
-                    key={workout.id}
+                    key={workout._id}
                     style ={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}
                 >
 
@@ -18,6 +23,8 @@ export default function WorkoutList({ workouts }: { workouts: Workout[] }) {
                             </li>
                         ))}
                     </ul>
+
+                    <button onClick={() => onDelete(workout._id)}>Delete</button>
                 </div>
             ))}
         </div>

@@ -24,12 +24,22 @@ function App() {
       console.error("Error adding workout:", error);
     }
   };
+  
+  const deleteWorkout = async (id: string) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/workouts/${id}`);
+      setWorkouts(workouts.filter(workout => workout._id !== id));
+    } catch (error) {
+      console.error("Error deleting workout:", error);
+    }
+  };  
+
 
   return (
     <div className="App">
       <h1>Workout Notes</h1>
       <WorkoutForm onAdd={addWorkout} />
-      <WorkoutList workouts={workouts} />
+      <WorkoutList workouts={workouts} onDelete={deleteWorkout} />
     </div>
   );
 }

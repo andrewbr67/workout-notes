@@ -6,7 +6,7 @@ export interface Exercise {
 }
 
 export interface Workout {
-    id?: string;
+    _id: string;
     title?: string;
     date?: string; // ISO date string
     exercises: Exercise[];
