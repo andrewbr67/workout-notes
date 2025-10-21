@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 // Get all workouts
 const getWorkouts = async (req, res) => {
     try {
-        const workouts = await Workout.find();
+        const workouts = await Workout.find({ user: req.user.id });
         res.json(workouts);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -14,7 +14,7 @@ const getWorkouts = async (req, res) => {
 const addWorkout = async (req, res) => {
     try {
         const { title, exercises } = req.body;
-        const newWorkout = new Workout({ title, exercises });
+        const newWorkout = new Workout({ title, exercises, user: req.user.id, });
         await newWorkout.save();
         res.json(newWorkout);
     } catch (err) {
@@ -30,10 +30,10 @@ const deleteWorkout = async (req, res) => {
             return res.status(404).json({ error: 'Invalid workout ID' });
         }
 
-        const workout = await Workout.findByIdAndDelete({ _id: id });
+        const workout = await Workout.findByIdAndDelete({ _id: id, user: req.user.id });
 
         if (!workout) {
-            return res.status(404).json({ error: 'Workout not found' });
+            return res.status(404).json({ error: 'Workout not found in your list of workouts' });
         }
 
         res.json({ message: 'Workout deleted successfully' });

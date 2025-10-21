@@ -1,4 +1,5 @@
-const User = require('../models/userModel');
+const User = require('../models/User');
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -6,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 //Function to create JWT
 const generateToken = (userId) => {
-    return jwt.sign({ user: userId }, JWT_SECRET, { expiresIn: '1d' }); //token expires in 1d
+    return jwt.sign({ id: userId }, JWT_SECRET, { expiresIn: '1d' }); //token expires in 1d
 };
 
 const register = async(req, res) => {
@@ -15,7 +16,7 @@ const register = async(req, res) => {
 
         //Check if the user already exists
         const existingEmail = await User.findOne({ email });
-        if (existingUEmail) {
+        if (existingEmail) {
             return res.status(400).json({ error: 'An account with this email already exists' });
         }
 
