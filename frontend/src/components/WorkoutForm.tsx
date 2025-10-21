@@ -85,6 +85,7 @@ export default function WorkoutForm({ onAdd }: WorkoutProps) {
                         value={exercise.weight}
                         onChange={(e) => handleExerciseChange(index, 'weight', e.target.value)}
                     />
+                    <button type="button" disabled = {exercises.length === 1} onClick={() => setExercises(exercises.filter((_, i) => (i !== index)))}>Remove</button>
                 </div>
             ))}
 
