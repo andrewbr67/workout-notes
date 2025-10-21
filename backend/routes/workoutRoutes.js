@@ -3,8 +3,12 @@ const { getWorkouts, addWorkout, deleteWorkout } = require('../controllers/worko
 
 const router = express.Router();
 
-router.get('/', getWorkouts);
-router.post('/', addWorkout);
-router.delete('/:id', deleteWorkout);
+const authMiddleware = require('../middleware/authMiddleware');
+
+router.use(authMiddleware);
+
+router.get('/', authMiddleware, getWorkouts);
+router.post('/', authMiddleware, addWorkout);
+router.delete('/:id', authMiddleware, deleteWorkout);
 
 module.exports = router;
