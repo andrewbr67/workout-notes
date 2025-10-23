@@ -1,12 +1,12 @@
 
 import { useState } from 'react';
 import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
+import type { User } from '../types/user';
 
-interface RegisterProps {
-    onRegister: (token : string, user : { id: string, username: string, email: string }) => void;
-}
+export default function Register() {
 
-export default function Register({ onRegister }: RegisterProps) {
+    const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -29,9 +29,14 @@ export default function Register({ onRegister }: RegisterProps) {
             });
 
             //backend returns token and new user object
-            const { token, user } = res.data;
-            //tell parent app that user registered
-            onRegister(token, user);
+            const { token, user } = res.data as { token: string, user: User };
+
+            //save the token to the browser so we can use it later
+            localStorage.setItem('token', token);
+            localStorage.setItem('user', JSON.stringify(user));
+
+            //now that user is registered, redirect to the workouts page
+            navigate('/workouts');
 
         } catch (err) {
             if(axios.isAxiosError(err)){
@@ -45,6 +50,8 @@ export default function Register({ onRegister }: RegisterProps) {
     };
 
     return (
+
+        <div>
         <form onSubmit={handleRegister}>
 
             <h2>Register</h2>
@@ -77,6 +84,9 @@ export default function Register({ onRegister }: RegisterProps) {
             />
             <button type="submit">Register</button>
         </form>
+
+        <p>Already have an account? <Link to="/login">Login</Link></p>
+        </div>
     );
 
 }            
