@@ -3,6 +3,7 @@ import axios from 'axios';
 import type { Workout } from '../types/workout';
 import WorkoutList from '../components/WorkoutList';
 import WorkoutForm from '../components/WorkoutForm';
+import Popup from '../components/Popup';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -11,6 +12,7 @@ export default function WorkoutsPage() {
     
     const navigate = useNavigate();
     const [workouts, setWorkouts] = useState<Workout[]>([]);
+    const [showPopup, setShowPopup] = useState(false);
 
     //declare token, initially try set as a stored token
     const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
@@ -41,6 +43,7 @@ export default function WorkoutsPage() {
     try {
       const res = await axios.post('http://localhost:5000/api/workouts', workout, { headers: { Authorization: `Bearer ${token}` } });
       setWorkouts([...workouts, res.data]);
+      setShowPopup(false);
     } catch (error) {
       console.error("Error adding workout:", error);
     }
@@ -67,15 +70,22 @@ export default function WorkoutsPage() {
 
   return (
     <div className ="workouts-page">
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>Workouts</h1>
-        <div>
-            <span style={{ marginRight: '10px' }}>{user?.username}</span>
-            <button onClick={logout}>Logout</button>
-        </div>
-      </header>
-      <WorkoutForm onAdd={addWorkout} />
-      <WorkoutList workouts={workouts} onDelete={deleteWorkout} />
+        <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h1>Workouts</h1>
+            <div>
+                <span style={{ marginRight: '10px' }}>{user?.username}</span>
+                <button onClick={logout}>Logout</button>
+             </div>
+        </header>
+
+        <button onClick={() => setShowPopup(true)}>Add Workout</button>
+
+        <WorkoutList workouts={workouts} onDelete={deleteWorkout} />
+
+        <Popup isOpen={showPopup} onClose={() => setShowPopup(false)}>
+            <h2>Add Workout</h2>
+            <WorkoutForm onAdd={addWorkout} />
+        </Popup>
     </div>
-  )
+  );
 }
